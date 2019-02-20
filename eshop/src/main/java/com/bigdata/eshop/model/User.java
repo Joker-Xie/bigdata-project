@@ -1,12 +1,14 @@
 package com.bigdata.eshop.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class User {
     private Integer id;
     private String name ;
     private String password;
-    private Date regDate;
+    private String email;
+    private String nickName;
+    private Date regDate = new Date();
 
     public Integer getId() {
         return id;
@@ -30,6 +32,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public Date getRegDate() {

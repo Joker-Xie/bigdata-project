@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -27,7 +28,19 @@ public class UserController {
     * 注册操作
     * */
     @RequestMapping(value = "/doReg",method = RequestMethod.POST)
-    public String doReg(User user){
+    public String doReg(User user , HttpServletRequest hsr,Model m){
+        //1.确认两次密码是否一致
+        String conFirmpass = hsr.getParameter("confirmpass");
+        if (!conFirmpass.equals(user.getPassword())){
+            m.addAttribute("error.password.nosame","前后密码不一致！");
+            return "userRegPage";
+        }
+        //2.确认邮箱是否有注册
+        boolean b =  us.isRegisted(user.getEmail());
+        if(b){
+            m.addAttribute("error.email.registed","邮箱已经被注册！");
+            return "userRegPage";
+        }
         us.saveEntity(user);
         System.out.println("注册成功！");
         return "loginPage";

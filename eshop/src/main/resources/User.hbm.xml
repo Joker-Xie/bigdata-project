@@ -10,6 +10,8 @@
         </id>
         <property name="name" column="name" type="string"/>
         <property name="password" column="password" type="string"/>
+        <property name="email" column="email" type="string"/>
+        <property name="nickName" column="nickname" type="string"/>
         <property name="regDate" column="regdate" type="date"/>
     </class>
 </hibernate-mapping>

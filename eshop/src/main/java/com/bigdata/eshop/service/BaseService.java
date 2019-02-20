@@ -12,4 +12,6 @@ public interface BaseService<T> {
     /*按照HQL*/
     public List<T> findByHQL(String hql, Object... objects);
     public void  execHQL(String hql,Object... objects);
+
+    public List<T> findAllEntites();
 }

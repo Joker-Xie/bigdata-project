@@ -5,13 +5,21 @@ import com.bigdata.eshop.service.BaseService;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
+
 /*
-* BaseService 抽象类
-* */
+ * BaseService 抽象类
+ * */
 // 注解驱动：@Transactional(propagation = Propagation.REQUIRED)
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
     private BaseDao<T> dao;
+    private Class<T> clazz;
+
+    public BaseServiceImpl() {
+        ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
+        clazz = (Class) type.getActualTypeArguments()[0];
+    }
 
     public BaseDao<T> getDao() {
         return dao;
@@ -47,5 +55,10 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
     public void execHQL(String hql, Object... objects) {
         dao.execHQL(hql, objects);
+    }
+
+    public List<T> findAllEntites() {
+        String hql = "from " +clazz.getSimpleName();
+        return this.findByHQL(hql);
     }
 }
