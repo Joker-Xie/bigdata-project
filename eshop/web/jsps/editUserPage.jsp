@@ -5,7 +5,7 @@
     <title>editUserPage.jsp</title>
 </head>
 <body>
-<form action="/admin/updateUser" method="post">
+<form action="<c:out value='/admin/updateUser'/>" method="post">
     <input type="hidden" name="id" value="<c:out value="${user.id}"/>" >
     Username :<input type="text" name="name" value="<c:out value="${user.name}"/>"><br>
     Email :<input type="text" name="email" value="<c:out value="${user.email}"/>"><c:out value="${requestScope['error.email.registed']}"/><br>

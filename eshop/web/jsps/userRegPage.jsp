@@ -5,7 +5,7 @@
     <title>userRegPage.jsp</title>
 </head>
 <body>
-<form action="/doReg" method="post">
+<form action="<c:out value='/doReg'/>" method="post">
     Username :<input type="text" name="name"><br>
     Email :<input type="text" name="email"><c:out value="${requestScope['error.email.registed']}"/><br>
     Nickname :<input type="text" name="nickName"><br>
