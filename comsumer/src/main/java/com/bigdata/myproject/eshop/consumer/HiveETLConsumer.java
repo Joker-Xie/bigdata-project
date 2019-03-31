@@ -1,7 +1,6 @@
 package com.bigdata.myproject.eshop.consumer;
 
 
-import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -11,15 +10,15 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.Timer;
 
-public class HDFSRawConsumer {
+public class HiveETLConsumer {
     private final KafkaConsumer consumer;
     private final Collection topic = new ArrayList();
     private final HDFSWriter writer = new HDFSWriter();
 
-    public HDFSRawConsumer() {
+    public HiveETLConsumer() {
         Properties props = new Properties();
         props.put("bootstrap.servers", "192.168.31.129:9092");
-        props.put("group.id", "g2");
+        props.put("group.id", "g1");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
@@ -38,11 +37,23 @@ public class HDFSRawConsumer {
                 if (arr == null || arr.length < 7) {
                     continue;
                 }
-                String host = StringUtils.getHost(arr);
-                String date = StringUtils.formatYyyymmddHHMMss(arr);
-                String path = "/user/centos/eshop/raw/" + date + "/" + host + ".log";
+                //进行数据清洗
+                System.out.println("hive: " + log);
+                String[] strs = StringUtils.logETL(log);
+                if (!strs[3].endsWith("html")) {
+                    continue;
+                }
+                String host = StringUtils.getHost(strs);
+                String[] explodeDate = StringUtils.explodeDate(strs);
+                log = StringUtils.arr2Str(strs);
+                String path = "/user/hive/warehouse/eshop.db/logs/"
+                        + "year=" + explodeDate[0]
+                        + "/month=" + explodeDate[1]
+                        + "/day=" + explodeDate[2]
+                        + "/hour=" + explodeDate[3]
+                        + "/minue=" + explodeDate[4]
+                        + "/" + host + ".log";
                 writer.writeLog2HDFS(path, log);
-                System.out.println("raw:"+log);
             }
         }
     }

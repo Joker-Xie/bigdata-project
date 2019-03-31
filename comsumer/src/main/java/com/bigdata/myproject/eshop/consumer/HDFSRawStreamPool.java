@@ -5,6 +5,7 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,17 +32,17 @@ public class HDFSRawStreamPool {
         }
     }
 
-    public synchronized FSDataOutputStream getInputStream(String path) {
+    public synchronized FSDataOutputStream takeOutputStream(String path) {
         try {
-            //判断是不是有流存在
             FSDataOutputStream out = pool.remove(path);
+            Path p = new Path(path);
+            //
+            /*
+            * 判断是不是有流存在
+            * 注意，生产环境下不要使用append,append存在不稳定性，特别是是在池化模式下
+            * */
             if (out == null) {
-                System.out.println(path);
-                Path p = new Path(path);
-                if (!fs.exists(p)) {
-                    fs.createNewFile(p);
-                }
-                out = fs.append(p);
+                out = fs.create(p);
             }
             return new MyFSDataOutputStream(out, path, this);
         } catch (Exception e) {
@@ -50,7 +51,21 @@ public class HDFSRawStreamPool {
         return null;
     }
 
-    public void putBack(String path, FSDataOutputStream out) {
+    //回收流
+    public synchronized void putBack(String path, FSDataOutputStream out) {
         pool.put(path, out);
+    }
+
+    //释放流
+    public synchronized void releasePool() {
+        try {
+            for (FSDataOutputStream o : pool.values()) {
+                o.close();
+            }
+            pool.clear();
+            System.out.println("释放池子！！！");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -15,8 +15,12 @@ public class MyFSDataOutputStream extends FSDataOutputStream {
     }
 
     @Override
-    public void close() throws IOException {
-        pool.putBack(path,this);
+    public void close() {
+        try {
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -27,5 +31,14 @@ public class MyFSDataOutputStream extends FSDataOutputStream {
     @Override
     public void hflush() throws IOException {
         out.hflush();
+    }
+
+    @Override
+    public void hsync() throws IOException {
+        out.hsync();
+    }
+
+    public void release(){
+        pool.putBack(path,this);
     }
 }
