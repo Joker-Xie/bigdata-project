@@ -38,20 +38,20 @@ public class HiveETLConsumer {
                     continue;
                 }
                 //进行数据清洗
-                System.out.println("hive: " + log);
                 String[] strs = StringUtils.logETL(log);
                 if (!strs[3].endsWith("html")) {
                     continue;
                 }
+                System.out.println("hive: " + log);
                 String host = StringUtils.getHost(strs);
                 String[] explodeDate = StringUtils.explodeDate(strs);
                 log = StringUtils.arr2Str(strs);
-                String path = "/user/hive/warehouse/eshop.db/logs/"
-                        + "year=" + explodeDate[0]
-                        + "/month=" + explodeDate[1]
-                        + "/day=" + explodeDate[2]
-                        + "/hour=" + explodeDate[3]
-                        + "/minue=" + explodeDate[4]
+                String path = "/user/centos/eshop/clear/"
+                        + explodeDate[0]
+                        + "/" + explodeDate[1]
+                        + "/" + explodeDate[2]
+                        + "/" + explodeDate[3]
+                        + "/" + explodeDate[4]
                         + "/" + host + ".log";
                 writer.writeLog2HDFS(path, log);
             }

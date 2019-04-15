@@ -38,9 +38,9 @@ public class HDFSRawStreamPool {
             Path p = new Path(path);
             //
             /*
-            * 判断是不是有流存在
-            * 注意，生产环境下不要使用append,append存在不稳定性，特别是是在池化模式下
-            * */
+             * 判断是不是有流存在
+             * 注意，生产环境下不要使用append,append存在不稳定性，特别是是在池化模式下
+             * */
             if (out == null) {
                 out = fs.create(p);
             }

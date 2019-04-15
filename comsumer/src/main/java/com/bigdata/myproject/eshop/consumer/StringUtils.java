@@ -48,6 +48,18 @@ public class StringUtils {
         return localDf.format(dec);
     }
 
+    public static long getTs(String[] arr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss", Locale.US);
+        String date = getDate(arr).trim();
+        long dec = 0L;
+        try {
+            dec = sdf.parse(date).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dec;
+    }
+
     public static String[] logETL(String log) {
         String[] arr = log.split(token);
         arr[3] = arr[3].split(" ")[1];
