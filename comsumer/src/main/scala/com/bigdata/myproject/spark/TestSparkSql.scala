@@ -1,7 +1,7 @@
 package com.bigdata.myproject.spark
 
-import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
 
 object TestSparkSql {
   case class user(name:String , age:Int, occ:String)
